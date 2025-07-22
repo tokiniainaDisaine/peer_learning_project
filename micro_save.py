@@ -43,7 +43,7 @@ Main expenses:
 -rent_expense
 -transportation
 
-Optional one:
+Optional:
 Asks the user for the expense name
 Then asks how much does it cost
 """
@@ -63,7 +63,5 @@ visualize_percentage("Food", food, income)
 visualize_percentage("Rent", rent, income)
 visualize_percentage("Transportation", transportation, income)
 
-
 # Calculate the target income/expense
-
-
+# f(x) = 100 / x 
