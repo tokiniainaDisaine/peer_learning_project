@@ -7,8 +7,6 @@ The app to help you reach your financial goals
 import mysql.connector
 
 
-
-
 # Functions
 
 # Database
@@ -34,7 +32,7 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
         CREATE TABLE IF NOT EXISTS Income (
             id INT AUTO_INCREMENT PRIMARY KEY,
             source VARCHAR(255),
-            amount DECIMAL(100000000,2),
+            amount DECIMAL(10,2),
             date DATE
         )
     """)
@@ -44,7 +42,7 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
         CREATE TABLE IF NOT EXISTS Expenses (
             id INT AUTO_INCREMENT PRIMARY KEY,
             category VARCHAR(255),
-            amount DECIMAL(100000000,2),
+            amount DECIMAL(10,2),
             date DATE
         )
     """)
@@ -60,6 +58,32 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
     cursor.close()
     conn.close()
     print("Database and tables are set up.")
+
+
+def add_expenses(category, amount, date, host="localhost", user="root", password="", database="microsave"):
+     # Connect to MySQL server
+    conn = mysql.connector.connect(
+        host=host,
+        user=user,
+        password=password,
+        database=database
+    )
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "INSERT INTO Expenses (category, amount, date) VALUES (%s, %s, %s)",
+        (category, amount, date)
+    )
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+    print("Expense added.")
+
+
+
+
 def visualize_percentage(name, value, total):
     """
     Function that give a visual representation of a percentage,
