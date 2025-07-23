@@ -61,6 +61,30 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
     conn.close()
     print("Database and tables are set up.")
 
+def show_welcome_screen():
+    print(">>> Welcome to MicroSaver!")
+    print("Your app to track your finances properly.")
+    choice = input("Do you wish to continue? [Y/n]: ").strip().lower()
+    if choice != 'y':
+        print("Goodbye!")
+        exit()
+
+def add_income():
+    source = input("Enter income source (e.g., job, hustle): ")
+    try:
+        amount = float(input("Enter amount (RWF): "))
+        date = datetime.date.today().isoformat()
+
+        conn = connect_db()
+        c = conn.cursor()
+        c.execute("INSERT INTO Income (source, amount, date) VALUES (%s, %s, %s)", (source, amount, date))
+        conn.commit()
+        conn.close()
+
+        print(f"Income of {amount} RWF from {source} recorded.")
+    except ValueError:
+        print("Invalid amount.")
+
 
 def add_expenses(category, amount, date, host="localhost", user="root", password="", database="microsave"):
      # Connect to MySQL server
@@ -133,29 +157,36 @@ def visualize_percentage(name, value, total):
 
 
 
-# User input 
-"""
-For the user input,
+def main():
+    setup_db()
+    show_welcome_screen()
 
-We'll need to get those variables:
+    while True:
+        print("\n-----Main Menu-----")
+        print("1. Add Income")
+        print("2. Add Expense")
+        print("3. Set Savings Goal")
+        print("4. View Summary")
+        print("5. Export Report")
+        print("6. Exit")
 
-Main expenses:
--income
--food_expense
--rent_expense
--transportation
+        choice = input("Choose an option [1-6]: ").strip()
 
-Optional:
-Asks the user for the expense name
-Then asks how much does it cost
-Store in dictionary:
-other_expenses = {
-    "expense_name": value
-}
-"""
+        if choice == '1':
+            add_income()
+        elif choice == '2':
+            add_expenses()
+        elif choice == '3':
+            set_savings_goal()
+        elif choice == '4':
+            view_summary()
+        elif choice == '5':
+            export_report()
+        elif choice == '6':
+            print("Thank you for using MicroSaver. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Try again.")
 
-# Calculate the present income/expense
-
-
-# Calculate the target income/expense
-# f(x) = 100 / x
+if __name__ == "__main__":
+    main()
