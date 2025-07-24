@@ -32,7 +32,7 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
             CREATE TABLE IF NOT EXISTS Income (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 source VARCHAR(255),
-                amount DECIMAL(100000000,2),
+                amount INT,
                 date DATE
             )
         """)
@@ -42,7 +42,7 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
             CREATE TABLE IF NOT EXISTS Expenses (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(255),
-                amount DECIMAL(100000000,2),
+                amount INT,
                 date DATE
             )
         """)
@@ -51,7 +51,7 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS Savings_goal (
                 id INT PRIMARY KEY,
-                amount DECIMAL(100000000,2)
+                amount INT
                 description VARCHAR(255),
                 target_date DATE,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
