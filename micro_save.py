@@ -15,51 +15,55 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
     Creates the database and tables if they do not exist.
     """
     # Connect to MySQL server
-    conn = mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password
-    )
-    cursor = conn.cursor()
-
-    # Create database if not exists
-    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database}")
-    conn.database = database
-
-    # Create Income table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Income (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            source VARCHAR(255),
-            amount DECIMAL(100000000,2),
-            date DATE
+    try:
+        conn = mysql.connector.connect(
+            host=host,
+            user=user,
+            password=password
         )
-    """)
+        cursor = conn.cursor()
 
-    # Create Expenses table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Expenses (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            category VARCHAR(255),
-            amount DECIMAL(100000000,2),
-            date DATE
-        )
-    """)
+        # Create database if not exists
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database}")
+        conn.database = database
 
-    # Create Savings_goal table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Savings_goal (
-            id INT PRIMARY KEY,
-            amount DECIMAL(100000000,2)
-            description VARCHAR(255),
-            target_date DATE,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
+        # Create Income table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS Income (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                source VARCHAR(255),
+                amount DECIMAL(100000000,2),
+                date DATE
+            )
+        """)
 
-    cursor.close()
-    conn.close()
-    print("Database and tables are set up.")
+        # Create Expenses table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS Expenses (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                category VARCHAR(255),
+                amount DECIMAL(100000000,2),
+                date DATE
+            )
+        """)
+
+        # Create Savings_goal table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS Savings_goal (
+                id INT PRIMARY KEY,
+                amount DECIMAL(100000000,2)
+                description VARCHAR(255),
+                target_date DATE,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        cursor.close()
+        conn.close()
+        print("Database and tables are set up.")
+
+    except mysql.connector.Error as e:
+        print(f"Error setting up database: {e}")
 
 def show_welcome_screen():
     print(">>> Welcome to MicroSaver!")
