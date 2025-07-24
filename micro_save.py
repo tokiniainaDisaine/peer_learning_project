@@ -139,7 +139,7 @@ def set_savings_goal():
         if not conn: return
         cursor = conn.cursor()
         cursor.execute(
-            "REPLACE INTO Savings_goal (amount, description, target_date) VALUES (1, %s, %s, %s)",
+            "REPLACE INTO Savings_goal (id, amount, description, target_date) VALUES (1, %s, %s, %s)",
             (amount, description, target_date)
         )
         conn.commit()
