@@ -122,10 +122,10 @@ def add_expenses():
         cursor.close()
         conn.close()
 
-        print(f"✅ Expense of {amount} RWF for {category} recorded.")
+        print(f" Expense of {amount} RWF for {category} recorded.")
 
     except ValueError:
-        print("❌ Invalid amount.")
+        print("Invalid amount.")
 
     except Exception as e:
         print(f"Error storing expense: {e}")
@@ -133,7 +133,7 @@ def add_expenses():
 
 
 
-def set_savings_goal(amount, description, target_date):
+def set_savings_goal():
     conn = get_connection()
     if not conn: return
     cursor = conn.cursor()
