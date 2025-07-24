@@ -134,22 +134,26 @@ def add_expenses():
 
 
 def set_savings_goal():
-    conn = get_connection()
-    if not conn: return
-    cursor = conn.cursor()
+    try:
+        amount = float(input("Enter your savings goal amount (RWF): "))
+        description = input("Short description for this goal: ")
+        target_date = input("Enter target date (YYYY-MM-DD): ")
 
-    cursor.execute(
-        "INSERT INTO Savings_goal (category, amount, date) VALUES (%s, %s, %s)",
-        (amount, description, target_date)
-    )
-
-    conn.commit()
-    cursor.close()
-    conn.close()
-    print("Saving goal added.")
-
-
-
+        conn = get_connection()
+        if not conn: return
+        cursor = conn.cursor()
+        cursor.execute(
+            "REPLACE INTO Savings_goal (id, amount, description, target_date) VALUES (1, %s, %s, %s)",
+            (amount, description, target_date)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print(" Saving goal added.\n")
+    except ValueError:
+        print(" Invalid input. Amount should be a number.")
+    except Exception as e:
+        print(f" Error: {e}")
 
 
 def visualize_percentage(name, value, total):
