@@ -197,15 +197,16 @@ def visualize_percentage(name, value, total):
     Returns: None
         prints the visual of the percentage
     """
-    
-    percentage = (value/total) * 100
-    item = "{}: {}%".format(name, percentage)
 
-    print(item.ljust(25), end=" ")
-
-    for i in range(int(percentage/2)):
-        print("#", end="")
-    print("")
+    try:
+        percentage = (value / total) * 100 if total else 0
+        item = f"{name}: {percentage:.2f}%"
+        print(item.ljust(25), end=" ")
+        for _ in range(int(percentage / 2)):
+            print("#", end="")
+        print("\n")
+    except Exception as e:
+        print(f"Visualization error: {e}")
 
 
 
