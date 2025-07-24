@@ -94,9 +94,10 @@ def add_income():
         amount = float(input("Enter amount (RWF): "))
         date = datetime.date.today().isoformat()
 
-        conn = connect_db()
-        c = conn.cursor()
-        c.execute("INSERT INTO Income (source, amount, date) VALUES (%s, %s, %s)", (source, amount, date))
+        conn = get_connection()
+        if not conn: return
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO Income (source, amount, date) VALUES (%s, %s, %s)", (source, amount, date))
         conn.commit()
         conn.close()
 
@@ -105,30 +106,36 @@ def add_income():
         print("Invalid amount.")
 
 
-def add_expenses(category, amount, date):
-     # Connect to MySQL server
-     try:
-         conn = get_connection()
-         if not conn: return
-         cursor = conn.cursor()
-         today = date.today().isoformat()
-         cursor.execute("INSERT INTO Expenses (category, amount, date) VALUES (%s, %s, %s)", (category, amount, today))
-         conn.commit()
-         conn.close()
-     except Exception as e:
-         print(f"Error storing expense: {e}")
+def add_expenses():
 
-     print("Expense added.")
+    try:
+
+        category = input("Enter expense category (e.g., food, transport): ")
+        amount = float(input("Enter amount (RWF): "))
+        date_today = datetime.date.today().isoformat()
+
+        conn = get_connection()
+        if not conn: return
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO Expenses (category, amount, date) VALUES (%s, %s, %s)", (category, amount, date_today))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        print(f"✅ Expense of {amount} RWF for {category} recorded.")
+
+    except ValueError:
+        print("❌ Invalid amount.")
+
+    except Exception as e:
+        print(f"Error storing expense: {e}")
 
 
-def set_savings_goal(amount, description, target_date, host="localhost", user="root", password="", database="microsave"):
-    conn = mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database
-    )
 
+
+def set_savings_goal(amount, description, target_date):
+    conn = get_connection()
+    if not conn: return
     cursor = conn.cursor()
 
     cursor.execute(
