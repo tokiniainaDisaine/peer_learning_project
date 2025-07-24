@@ -65,7 +65,22 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
     except mysql.connector.Error as e:
         print(f"Error setting up database: {e}")
 
+#  DATABASE CONNECTION
+def get_connection():
+    try:
+        return mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="microsave"
+        )
+    except mysql.connector.Error as e:
+        print(f"DB Connection Failed: {e}")
+        return None
+
+
 def show_welcome_screen():
+
     print(">>> Welcome to MicroSaver!")
     print("Your app to track your finances properly.")
     choice = input("Do you wish to continue? [Y/n]: ").strip().lower()
@@ -90,26 +105,20 @@ def add_income():
         print("Invalid amount.")
 
 
-def add_expenses(category, amount, date, host="localhost", user="root", password="", database="microsave"):
+def add_expenses(category, amount, date):
      # Connect to MySQL server
-    conn = mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database
-    )
+     try:
+         conn = get_connection()
+         if not conn: return
+         cursor = conn.cursor()
+         today = date.today().isoformat()
+         cursor.execute("INSERT INTO Expenses (category, amount, date) VALUES (%s, %s, %s)", (category, amount, today))
+         conn.commit()
+         conn.close()
+     except Exception as e:
+         print(f"Error storing expense: {e}")
 
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "INSERT INTO Expenses (category, amount, date) VALUES (%s, %s, %s)",
-        (category, amount, date)
-    )
-
-    conn.commit()
-    cursor.close()
-    conn.close()
-    print("Expense added.")
+     print("Expense added.")
 
 
 def set_savings_goal(amount, description, target_date, host="localhost", user="root", password="", database="microsave"):
