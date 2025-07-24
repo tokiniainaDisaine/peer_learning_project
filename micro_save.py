@@ -137,7 +137,7 @@ def set_savings_goal():
     try:
         amount = float(input("Enter your savings goal amount (RWF): "))
         description = input("Short description for this goal: ")
-        target_date = input("Enter target date (YYYY-MM-DD): ")
+        target_date = input("Enter Target Date (YYYY-MM-DD): ")
 
         conn = get_connection()
         if not conn: return
