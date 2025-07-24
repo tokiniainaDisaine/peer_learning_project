@@ -51,7 +51,7 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS Savings_goal (
                 id INT PRIMARY KEY,
-                amount INT
+                amount INT,
                 description VARCHAR(255),
                 target_date DATE,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -87,6 +87,7 @@ def show_welcome_screen():
     if choice != 'y':
         print("Goodbye!")
         exit()
+        
 
 def add_income():
     source = input("Enter income source (e.g., job, hustle): ")
@@ -148,6 +149,8 @@ def set_savings_goal():
         print(" Saving goal added.\n")
     except ValueError:
         print(" Invalid input. Amount should be a number.")
+    except mysql.connector.errors.DataError:
+        print(" Invalid input. The target date should be in a date format.")
     except Exception as e:
         print(f" Error: {e}")
 
