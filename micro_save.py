@@ -65,6 +65,7 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
     except mysql.connector.Error as e:
         print(f"Error setting up database: {e}")
 
+
 #  DATABASE CONNECTION
 def get_connection():
     try:
@@ -80,7 +81,6 @@ def get_connection():
 
 
 def show_welcome_screen():
-
     print(">>> Welcome to MicroSaver!")
     print("Your app to track your finances properly.")
     choice = input("Do you wish to continue? [Y/n]: ").strip().lower()
@@ -107,9 +107,7 @@ def add_income():
 
 
 def add_expenses():
-
     try:
-
         category = input("Enter expense category (e.g., food, transport): ")
         amount = float(input("Enter amount (RWF): "))
         date_today = datetime.date.today().isoformat()
@@ -131,8 +129,6 @@ def add_expenses():
         print(f"Error storing expense: {e}")
 
 
-
-
 def set_savings_goal():
     try:
         amount = float(input("Enter your savings goal amount (RWF): "))
@@ -143,7 +139,7 @@ def set_savings_goal():
         if not conn: return
         cursor = conn.cursor()
         cursor.execute(
-            "REPLACE INTO Savings_goal (id, amount, description, target_date) VALUES (1, %s, %s, %s)",
+            "REPLACE INTO Savings_goal (amount, description, target_date) VALUES (1, %s, %s, %s)",
             (amount, description, target_date)
         )
         conn.commit()
@@ -154,6 +150,7 @@ def set_savings_goal():
         print(" Invalid input. Amount should be a number.")
     except Exception as e:
         print(f" Error: {e}")
+
 
 def view_summary():
     try:
@@ -184,6 +181,7 @@ def view_summary():
     except Exception as e:
         print(f" Error generating summary: {e}")
 
+
 def visualize_percentage(name, value, total):
     """
     Function that give a visual representation of a percentage,
@@ -207,7 +205,6 @@ def visualize_percentage(name, value, total):
         print("\n")
     except Exception as e:
         print(f"Visualization error: {e}")
-
 
 
 def main():
