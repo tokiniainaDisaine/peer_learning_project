@@ -155,6 +155,34 @@ def set_savings_goal():
     except Exception as e:
         print(f" Error: {e}")
 
+def view_summary():
+    try:
+        conn = get_connection()
+        if not conn: return
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT SUM(amount) FROM Income")
+        income = cursor.fetchone()[0] or 0
+
+        cursor.execute("SELECT SUM(amount) FROM Expenses")
+        expenses = cursor.fetchone()[0] or 0
+
+        cursor.execute("SELECT amount FROM Savings_goal WHERE id = 1")
+        result = cursor.fetchone()
+        goal = result[0] if result else 0
+
+        cursor.close()
+        conn.close()
+
+        balance = income - expenses
+        print("\n Financial Summary")
+        print(f"Total Income: RWF {income}")
+        print(f"Total Expenses: RWF {expenses}")
+        print(f"Current Balance: RWF {balance}")
+        print(f"Savings Goal: RWF {goal}")
+        visualize_percentage("Goal Achieved", balance, goal)
+    except Exception as e:
+        print(f" Error generating summary: {e}")
 
 def visualize_percentage(name, value, total):
     """
