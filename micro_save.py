@@ -9,7 +9,7 @@ import datetime
 # Functions
 
 # Database
-def setup_db(host="localhost", user="root", password="", database="microsave"):
+def setup_db(host="localhost", user="group_2", password="", database="microsave"):
     """
     Sets up the MySQL database and required tables for MicroSave.
     Creates the database and tables if they do not exist.
@@ -32,7 +32,7 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
             CREATE TABLE IF NOT EXISTS Income (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 source VARCHAR(255),
-                amount DECIMAL(100000000,2),
+                amount DECIMAL(10,2),
                 date DATE
             )
         """)
@@ -42,7 +42,7 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
             CREATE TABLE IF NOT EXISTS Expenses (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(255),
-                amount DECIMAL(100000000,2),
+                amount DECIMAL(10,2),
                 date DATE
             )
         """)
@@ -51,7 +51,7 @@ def setup_db(host="localhost", user="root", password="", database="microsave"):
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS Savings_goal (
                 id INT PRIMARY KEY,
-                amount DECIMAL(100000000,2)
+                amount DECIMAL(10,2),
                 description VARCHAR(255),
                 target_date DATE,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -71,7 +71,7 @@ def get_connection():
     try:
         return mysql.connector.connect(
             host="localhost",
-            user="root",
+            user="group_2",
             password="",
             database="microsave"
         )
@@ -139,8 +139,8 @@ def set_savings_goal():
         if not conn: return
         cursor = conn.cursor()
         cursor.execute(
-            "REPLACE INTO Savings_goal (amount, description, target_date) VALUES (1, %s, %s, %s)",
-            (amount, description, target_date)
+            "REPLACE INTO Savings_goal (id, amount, description, target_date) VALUES (%s, %s, %s, %s)",
+            (1, amount, description, target_date)
         )
         conn.commit()
         cursor.close()
@@ -200,8 +200,6 @@ def visualize_percentage(name, value, total):
         percentage = (value / total) * 100 if total else 0
         item = f"{name}: {percentage:.2f}%"
         print(item.ljust(25), end=" ")
-        for _ in range(int(percentage / 2)):
-            print("#", end="")
         print("\n")
     except Exception as e:
         print(f"Visualization error: {e}")
