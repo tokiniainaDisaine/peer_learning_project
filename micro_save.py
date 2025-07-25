@@ -32,7 +32,11 @@ def setup_db(host="localhost", user="group_2", password="", database="microsave"
             CREATE TABLE IF NOT EXISTS Income (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 source VARCHAR(255),
+<<<<<<< HEAD
                 amount DECIMAL(10,2),
+=======
+                amount INT,
+>>>>>>> 7b33b689f29c9723e3599b7e702cfc96f6469e07
                 date DATE
             )
         """)
@@ -42,7 +46,11 @@ def setup_db(host="localhost", user="group_2", password="", database="microsave"
             CREATE TABLE IF NOT EXISTS Expenses (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(255),
+<<<<<<< HEAD
                 amount DECIMAL(10,2),
+=======
+                amount INT,
+>>>>>>> 7b33b689f29c9723e3599b7e702cfc96f6469e07
                 date DATE
             )
         """)
@@ -51,7 +59,11 @@ def setup_db(host="localhost", user="group_2", password="", database="microsave"
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS Savings_goal (
                 id INT PRIMARY KEY,
+<<<<<<< HEAD
                 amount DECIMAL(10,2),
+=======
+                amount INT,
+>>>>>>> 7b33b689f29c9723e3599b7e702cfc96f6469e07
                 description VARCHAR(255),
                 target_date DATE,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -87,6 +99,7 @@ def show_welcome_screen():
     if choice != 'y':
         print("Goodbye!")
         exit()
+        
 
 def add_income():
     source = input("Enter income source (e.g., job, hustle): ")
@@ -138,7 +151,7 @@ def set_savings_goal():
         conn = get_connection()
         if not conn: return
         cursor = conn.cursor()
-        cursor.execute(
+        cursor.execute
             "REPLACE INTO Savings_goal (id, amount, description, target_date) VALUES (%s, %s, %s, %s)",
             (1, amount, description, target_date)
         )
@@ -148,6 +161,8 @@ def set_savings_goal():
         print(" Saving goal added.\n")
     except ValueError:
         print(" Invalid input. Amount should be a number.")
+    except mysql.connector.errors.DataError:
+        print(" Invalid input. The target date should be in a date format.")
     except Exception as e:
         print(f" Error: {e}")
 
