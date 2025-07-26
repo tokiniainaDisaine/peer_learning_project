@@ -9,7 +9,7 @@ import datetime
 # Functions
 
 # Database
-def setup_db(host="localhost", user="group_2", password="", database="microsave"):
+def setup_db(host="localhost", user="root", password="Rbcc1lusm/", database="microsave"):
     """
     Sets up the MySQL database and required tables for MicroSave.
     Creates the database and tables if they do not exist.
@@ -71,8 +71,8 @@ def get_connection():
     try:
         return mysql.connector.connect(
             host="localhost",
-            user="group_2",
-            password="",
+            user="root",
+            password="Rbcc1lusm/",
             database="microsave"
         )
     except mysql.connector.Error as e:
@@ -200,6 +200,7 @@ def export_report():
         cursor.execute("SELECT amount FROM Savings_goal WHERE id = 1")
         result = cursor.fetchone()
         goal = result[0] if result else 0
+        date_today = datetime.date.today().isoformat()
 
         balance = income - expenses
 
@@ -207,23 +208,28 @@ def export_report():
         if not filename.endswith(".txt"):
             filename += ".txt"
 
-        with open(filename, "w") as f:
+        with open(filename, "a") as f:
             f.write("MicroSaver Financial Report\n")
             f.write(f"Total Income: RWF {income}\n")
             f.write(f"Total Expenses: RWF {expenses}\n")
             f.write(f"Current Balance: RWF {balance}\n")
             f.write(f"Savings Goal: RWF {goal}\n")
+
             if goal > 0:
                 progress = (balance / goal) * 100
                 f.write(f"Goal Achievement: {progress:.2f}%\n")
             else:
                 f.write("Goal Achievement: No goal set.\n")
 
-        print(f" Report exported successfully to {filename}.\n")
+            f.write(f"Summary done on {date_today}\n")
+            f.write("-----------------------------------------\n")
+
+        print(f"Report exported successfully to {filename}.\n")
         cursor.close()
         conn.close()
     except Exception as e:
         print(f" Export failed: {e}")
+
 
 def visualize_percentage(name, value, total):
     """
