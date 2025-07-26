@@ -215,7 +215,7 @@ def export_report():
 
         balance = income - expenses
 
-        filename = input("Enter filename to export report (e.g., report.txt): ")
+        filename = "report.txt"
         if not filename.endswith(".txt"):
             filename += ".txt"
 
