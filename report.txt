@@ -6,3 +6,11 @@ Savings Goal: RWF 10000
 Goal Achievement: -307232.35%
 Summary done on 2025-07-26T20:05:04.711815
 -----------------------------------------
+MicroSaver Financial Report
+Total Income: RWF 28789233
+Total Expenses: RWF 59512468
+Current Balance: RWF -30723235
+Savings Goal: RWF 10000
+Goal Achievement: -307232.35%
+Summary done on 2025-07-26
+-----------------------------------------

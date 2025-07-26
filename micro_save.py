@@ -94,7 +94,7 @@ def add_income():
     try:
         amount = float(input("Enter amount (RWF): "))
         if amount < 0:
-            print(" Amount cannot be negative.")
+            print("Amount cannot be negative.")
             return
         date = datetime.date.today().isoformat()
 
@@ -115,7 +115,7 @@ def add_expenses():
         category = input("Enter expense category (e.g., food, transport): ")
         amount = float(input("Enter amount (RWF): "))
         if amount < 0:
-            print(" Amount cannot be negative.")
+            print("Amount cannot be negative.")
             return
         date_today = datetime.date.today().isoformat()
 
@@ -255,7 +255,6 @@ def visualize_percentage(name, value, total):
     Returns: None
         prints the visual of the percentage
     """
-
     try:
         percentage = (value / total) * 100 if total else 0
         item = f"{name}: {percentage:.2f}%"
