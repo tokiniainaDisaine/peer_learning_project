@@ -183,43 +183,47 @@ def view_summary():
     except Exception as e:
         print(f" Error generating summary: {e}")
 
+
+# ===== EXPORT REPORT =====
 def export_report():
-    import sqlite3
+    try:
+        conn = get_connection()
+        if not conn: return
+        cursor = conn.cursor()
 
-    conn = sqlite3.connect("micro_save.db")
-    cursor = conn.cursor()
+        cursor.execute("SELECT SUM(amount) FROM Income")
+        income = cursor.fetchone()[0] or 0
 
-    # Fetch values
-    cursor.execute("SELECT SUM(amount) FROM Income")
-    income = cursor.fetchone()[0] or 0
+        cursor.execute("SELECT SUM(amount) FROM Expenses")
+        expenses = cursor.fetchone()[0] or 0
 
-    cursor.execute("SELECT SUM(amount) FROM Expenses")
-    expenses = cursor.fetchone()[0] or 0
+        cursor.execute("SELECT amount FROM Savings_goal WHERE id = 1")
+        result = cursor.fetchone()
+        goal = result[0] if result else 0
 
-    cursor.execute("SELECT amount FROM Savings_goal WHERE id = 1")
-    result = cursor.fetchone()
-    goal = result[0] if result else 0
+        balance = income - expenses
 
-    balance = income - expenses
+        filename = input("Enter filename to export report (e.g., report.txt): ")
+        if not filename.endswith(".txt"):
+            filename += ".txt"
 
-    cursor.close()
-    conn.close()
+        with open(filename, "w") as f:
+            f.write("MicroSaver Financial Report\n")
+            f.write(f"Total Income: RWF {income}\n")
+            f.write(f"Total Expenses: RWF {expenses}\n")
+            f.write(f"Current Balance: RWF {balance}\n")
+            f.write(f"Savings Goal: RWF {goal}\n")
+            if goal > 0:
+                progress = (balance / goal) * 100
+                f.write(f"Goal Achievement: {progress:.2f}%\n")
+            else:
+                f.write("Goal Achievement: No goal set.\n")
 
-    # Create report text
-    report = (
-        "Financial Summary\n"
-        f"Total Income: RWF {income}\n"
-        f"Total Expenses: RWF {expenses}\n"
-        f"Current Balance: RWF {balance}\n"
-        f"Savings Goal: RWF {goal}\n"
-        f"Goal Achieved: {min(100, (balance / goal) * 100 if goal else 0):.2f}%\n"
-    )
-
-    # Save to file
-    with open("financial_report.txt", "w") as file:
-        file.write(report)
-
-    print("Report exported to financial_report.txt")
+        print(f" Report exported successfully to {filename}.\n")
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        print(f" Export failed: {e}")
 
 def visualize_percentage(name, value, total):
     """
