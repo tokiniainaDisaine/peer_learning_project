@@ -93,6 +93,9 @@ def add_income():
     source = input("Enter income source (e.g., job, hustle): ")
     try:
         amount = float(input("Enter amount (RWF): "))
+        if amount < 0:
+            print(" Amount cannot be negative.")
+            return
         date = datetime.date.today().isoformat()
 
         conn = get_connection()
@@ -111,6 +114,9 @@ def add_expenses():
     try:
         category = input("Enter expense category (e.g., food, transport): ")
         amount = float(input("Enter amount (RWF): "))
+        if amount < 0:
+            print(" Amount cannot be negative.")
+            return
         date_today = datetime.date.today().isoformat()
 
         conn = get_connection()
@@ -133,6 +139,11 @@ def add_expenses():
 def set_savings_goal():
     try:
         amount = float(input("Enter your savings goal amount (RWF): "))
+
+        if amount < 0:
+            print("Amount cannot be negative.")
+            return
+
         description = input("Short description for this goal: ")
         target_date = input("Enter Target Date (YYYY-MM-DD): ")
 
