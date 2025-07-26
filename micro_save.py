@@ -5,11 +5,12 @@ The app to help you reach your financial goals
 """
 import mysql.connector
 import datetime
+from getpass import getpass
 
 # Functions
 
 # Database
-def setup_db(host="localhost", user="group_2", password="", database="microsave"):
+def setup_db(host="localhost", user="root", password="", database="microsave"):
     """
     Sets up the MySQL database and required tables for MicroSave.
     Creates the database and tables if they do not exist.
@@ -67,12 +68,12 @@ def setup_db(host="localhost", user="group_2", password="", database="microsave"
 
 
 #  DATABASE CONNECTION
-def get_connection():
+def get_connection(password=""):
     try:
         return mysql.connector.connect(
             host="localhost",
-            user="group_2",
-            password="",
+            user="root",
+            password=password,
             database="microsave"
         )
     except mysql.connector.Error as e:
@@ -89,7 +90,7 @@ def show_welcome_screen():
         exit()
         
 
-def add_income():
+def add_income(password=""):
     source = input("Enter income source (e.g., job, hustle): ")
     try:
         amount = float(input("Enter amount (RWF): "))
@@ -98,7 +99,7 @@ def add_income():
             return
         date = datetime.date.today().isoformat()
 
-        conn = get_connection()
+        conn = get_connection(password)
         if not conn: return
         cursor = conn.cursor()
         cursor.execute("INSERT INTO Income (source, amount, date) VALUES (%s, %s, %s)", (source, amount, date))
@@ -110,7 +111,7 @@ def add_income():
         print("Invalid amount.")
 
 
-def add_expenses():
+def add_expenses(password=""):
     try:
         category = input("Enter expense category (e.g., food, transport): ")
         amount = float(input("Enter amount (RWF): "))
@@ -119,7 +120,7 @@ def add_expenses():
             return
         date_today = datetime.date.today().isoformat()
 
-        conn = get_connection()
+        conn = get_connection(password)
         if not conn: return
         cursor = conn.cursor()
         cursor.execute("INSERT INTO Expenses (category, amount, date) VALUES (%s, %s, %s)", (category, amount, date_today))
@@ -127,7 +128,7 @@ def add_expenses():
         cursor.close()
         conn.close()
 
-        print(f" Expense of {amount} RWF for {category} recorded.")
+        print(f"Expense of {amount} RWF for {category} recorded.")
 
     except ValueError:
         print("Invalid amount.")
@@ -136,7 +137,7 @@ def add_expenses():
         print(f"Error storing expense: {e}")
 
 
-def set_savings_goal():
+def set_savings_goal(password=""):
     try:
         amount = float(input("Enter your savings goal amount (RWF): "))
 
@@ -147,7 +148,7 @@ def set_savings_goal():
         description = input("Short description for this goal: ")
         target_date = input("Enter Target Date (YYYY-MM-DD): ")
 
-        conn = get_connection()
+        conn = get_connection(password)
         if not conn: return
         cursor = conn.cursor()
         cursor.execute("REPLACE INTO Savings_goal (id, amount, description, target_date) VALUES (%s, %s, %s, %s)",
@@ -156,18 +157,18 @@ def set_savings_goal():
         conn.commit()
         cursor.close()
         conn.close()
-        print(" Saving goal added.\n")
+        print("Saving goal added.\n")
     except ValueError:
-        print(" Invalid input. Amount should be a number.")
+        print("Invalid input. Amount should be a number.")
     except mysql.connector.errors.DataError:
-        print(" Invalid input. The target date should be in a date format.")
+        print("Invalid input. The target date should be in a date format.")
     except Exception as e:
         print(f" Error: {e}")
 
 
-def view_summary():
+def view_summary(password=""):
     try:
-        conn = get_connection()
+        conn = get_connection(password)
         if not conn: return
         cursor = conn.cursor()
 
@@ -196,9 +197,9 @@ def view_summary():
 
 
 # ===== EXPORT REPORT =====
-def export_report():
+def export_report(password=""):
     try:
-        conn = get_connection()
+        conn = get_connection(password)
         if not conn: return
         cursor = conn.cursor()
 
@@ -265,7 +266,9 @@ def visualize_percentage(name, value, total):
 
 
 def main():
-    setup_db()
+    password = getpass("Enter your MySQL root password: ")
+
+    setup_db(password=password)
     show_welcome_screen()
 
     while True:
@@ -280,15 +283,15 @@ def main():
         choice = input("Choose an option [1-6]: ").strip()
 
         if choice == '1':
-            add_income()
+            add_income(password=password)
         elif choice == '2':
-            add_expenses()
+            add_expenses(password=password)
         elif choice == '3':
-            set_savings_goal()
+            set_savings_goal(password=password)
         elif choice == '4':
-            view_summary()
+            view_summary(password=password)
         elif choice == '5':
-            export_report()
+            export_report(password=password)
         elif choice == '6':
             print("Thank you for using MicroSaver. Goodbye!")
             break
