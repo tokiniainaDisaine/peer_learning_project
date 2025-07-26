@@ -183,6 +183,43 @@ def view_summary():
     except Exception as e:
         print(f" Error generating summary: {e}")
 
+def export_report():
+    import sqlite3
+
+    conn = sqlite3.connect("micro_save.db")
+    cursor = conn.cursor()
+
+    # Fetch values
+    cursor.execute("SELECT SUM(amount) FROM Income")
+    income = cursor.fetchone()[0] or 0
+
+    cursor.execute("SELECT SUM(amount) FROM Expenses")
+    expenses = cursor.fetchone()[0] or 0
+
+    cursor.execute("SELECT amount FROM Savings_goal WHERE id = 1")
+    result = cursor.fetchone()
+    goal = result[0] if result else 0
+
+    balance = income - expenses
+
+    cursor.close()
+    conn.close()
+
+    # Create report text
+    report = (
+        "Financial Summary\n"
+        f"Total Income: RWF {income}\n"
+        f"Total Expenses: RWF {expenses}\n"
+        f"Current Balance: RWF {balance}\n"
+        f"Savings Goal: RWF {goal}\n"
+        f"Goal Achieved: {min(100, (balance / goal) * 100 if goal else 0):.2f}%\n"
+    )
+
+    # Save to file
+    with open("financial_report.txt", "w") as file:
+        file.write(report)
+
+    print("Report exported to financial_report.txt")
 
 def visualize_percentage(name, value, total):
     """
