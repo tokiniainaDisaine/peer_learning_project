@@ -2,7 +2,7 @@
 
 # MicroSave
 
-Welcome to our digital wallet, all your income and expenses in one place!!
+Welcome to our digital wallet, your income and expenses all in one place!!
 
 ## Table of contents
 - [Introduction](#introduction)
