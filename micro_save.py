@@ -196,6 +196,42 @@ def view_summary(password=""):
         print(f" Error generating summary: {e}")
 
 
+def view_long_summary(password=""):
+    try:
+        conn = get_connection(password)
+        if not conn: return
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT SUM(amount) FROM Income")
+        income = cursor.fetchone()[0] or 0
+
+        cursor.execute("SELECT SUM(amount) FROM Expenses")
+        expenses = cursor.fetchone()[0] or 0
+
+        cursor.execute("SELECT * FROM Expenses")
+        expenses_list = cursor.fetchall() or 0
+
+        cursor.execute("SELECT amount FROM Savings_goal WHERE id = 1")
+        result = cursor.fetchone()
+        goal = result[0] if result else 0
+
+        cursor.close()
+        conn.close()
+
+        balance = income - expenses
+        print("\n Financial Summary")
+        print(f"Total Income: RWF {income}")
+        print("Expenses list:")
+        for expense in expenses_list:
+            print(f"    {expense[1]}: RWF {expense[2]} on {expense[3]}")
+        print(f"Total Expenses: RWF {expenses}")
+        print(f"Current Balance: RWF {balance}")
+        print(f"Savings Goal: RWF {goal}")
+        visualize_percentage("Goal Achieved", balance, goal)
+    except Exception as e:
+        print(f" Error generating summary: {e}")
+
+
 # ===== EXPORT REPORT =====
 def export_report(password=""):
     try:
@@ -277,8 +313,9 @@ def main():
         print("2. Add Expense")
         print("3. Set Savings Goal")
         print("4. View Summary")
-        print("5. Export Report")
-        print("6. Exit")
+        print("5. View Long Summary")
+        print("6. Export Report")
+        print("7. Exit")
 
         choice = input("Choose an option [1-6]: ").strip()
 
@@ -291,8 +328,10 @@ def main():
         elif choice == '4':
             view_summary(password=password)
         elif choice == '5':
-            export_report(password=password)
+            view_long_summary(password=password)
         elif choice == '6':
+            export_report(password=password)
+        elif choice == '7':
             print("Thank you for using MicroSaver. Goodbye!")
             break
         else:
