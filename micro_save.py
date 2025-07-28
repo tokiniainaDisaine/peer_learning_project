@@ -257,6 +257,9 @@ def visualize_percentage(name, value, total):
     """
     try:
         percentage = (value / total) * 100 if total else 0
+        if percentage > 100:
+            print("Your goal has been achieved")
+            return
         item = f"{name}: {percentage:.2f}%"
         print(item.ljust(25), end=" ")
         print("\n")
