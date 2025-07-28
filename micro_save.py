@@ -10,7 +10,7 @@ from getpass import getpass
 # Functions
 
 # Database
-def setup_db(host="localhost", user="root", password="", database="microsave"):
+def setup_db(host="localhost", user="group_2", password="", database="microsave"):
     """
     Sets up the MySQL database and required tables for MicroSave.
     Creates the database and tables if they do not exist.
@@ -72,8 +72,8 @@ def get_connection(password=""):
     try:
         return mysql.connector.connect(
             host="localhost",
-            user="root",
-            password=password,
+            user="group_2",
+            password="",
             database="microsave"
         )
     except mysql.connector.Error as e:
