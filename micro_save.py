@@ -1,19 +1,42 @@
 #!/usr/bin/python3
 """
-Welcome to MicroSave :)
-The app to help you reach your financial goals
+MicroSave - Personal Finance Tracker
+
+This application helps users track their income, expenses, and savings goals.
+It uses a MySQL database to store financial records and provides summary reports.
+
+Features:
+- Add income and expenses
+- Set and track savings goals
+- View financial summaries
+- Export reports to text files
+
+Author: Group Coding Lab 4
+Date: 2025-07-28
 """
+
+
 import mysql.connector
 import datetime
 from getpass import getpass
 
-# Functions
+# =========================
+# Database Setup Functions
+# =========================
 
-# Database
-def setup_db(host="localhost", user="group_2", password="", database="microsave"):
+def setup_db(host="localhost", user="root", password="", database="microsave"):
     """
     Sets up the MySQL database and required tables for MicroSave.
     Creates the database and tables if they do not exist.
+
+    Args:
+        host (str): MySQL server host
+        user (str): MySQL username
+        password (str): MySQL password
+        database (str): Database name
+
+    Returns:
+        None
     """
     # Connect to MySQL server
     try:
@@ -67,13 +90,25 @@ def setup_db(host="localhost", user="group_2", password="", database="microsave"
         print(f"Error setting up database: {e}")
 
 
-#  DATABASE CONNECTION
+# =========================
+# Database Connection
+# =========================
+
 def get_connection(password=""):
+    """
+    Establishes a connection to the MicroSave MySQL database.
+
+    Args:
+        password (str): MySQL password
+
+    Returns:
+        mysql.connector.connection.MySQLConnection or None
+    """
     try:
         return mysql.connector.connect(
             host="localhost",
-            user="group_2",
-            password="",
+            user="root",
+            password=password,
             database="microsave"
         )
     except mysql.connector.Error as e:
@@ -81,7 +116,17 @@ def get_connection(password=""):
         return None
 
 
+# =========================
+# User Interface Functions
+# =========================
+
 def show_welcome_screen():
+    """
+    Displays the welcome screen and prompts the user to continue.
+
+    Returns:
+        None
+    """
     print(">>> Welcome to MicroSaver!")
     print("Your app to track your finances properly.")
     choice = input("Do you wish to continue? [Y/n]: ").strip().lower()
@@ -90,7 +135,20 @@ def show_welcome_screen():
         exit()
         
 
+# =========================
+# Income Functions
+# =========================
+
 def add_income(password=""):
+    """
+    Prompts the user to add an income record to the database.
+
+    Args:
+        password (str): MySQL password
+
+    Returns:
+        None
+    """
     source = input("Enter income source (e.g., job, hustle): ")
     try:
         amount = float(input("Enter amount (RWF): "))
@@ -111,7 +169,21 @@ def add_income(password=""):
         print("Invalid amount.")
 
 
+# =========================
+# Expense Functions
+# =========================
+
 def add_expenses(password=""):
+    """
+    Prompts the user to add an expense record to the database.
+
+    Args:
+        password (str): MySQL password
+
+    Returns:
+        None
+    """
+
     try:
         category = input("Enter expense category (e.g., food, transport): ")
         amount = float(input("Enter amount (RWF): "))
@@ -137,7 +209,20 @@ def add_expenses(password=""):
         print(f"Error storing expense: {e}")
 
 
+# =========================
+# Savings Goal Functions
+# =========================
+
 def set_savings_goal(password=""):
+    """
+    Prompts the user to set or update a savings goal.
+
+    Args:
+        password (str): MySQL password
+
+    Returns:
+        None
+    """
     try:
         amount = float(input("Enter your savings goal amount (RWF): "))
 
@@ -166,7 +251,20 @@ def set_savings_goal(password=""):
         print(f" Error: {e}")
 
 
+# =========================
+# Summary Functions
+# =========================
+
 def view_summary(password=""):
+    """
+    Displays a summary of total income, expenses, balance, and savings goal.
+
+    Args:
+        password (str): MySQL password
+
+    Returns:
+        None
+    """
     try:
         conn = get_connection(password)
         if not conn: return
@@ -197,6 +295,15 @@ def view_summary(password=""):
 
 
 def view_long_summary(password=""):
+    """
+    Displays a detailed summary including all expense records.
+
+    Args:
+        password (str): MySQL password
+
+    Returns:
+        None
+    """
     try:
         conn = get_connection(password)
         if not conn: return
@@ -232,8 +339,20 @@ def view_long_summary(password=""):
         print(f" Error generating summary: {e}")
 
 
-# ===== EXPORT REPORT =====
+# =========================
+# Report Export Function
+# =========================
+
 def export_report(password=""):
+    """
+    Exports a financial summary report to a text file.
+
+    Args:
+        password (str): MySQL password
+
+    Returns:
+        None
+    """
     try:
         conn = get_connection(password)
         if not conn: return
@@ -279,32 +398,44 @@ def export_report(password=""):
         print(f" Export failed: {e}")
 
 
+# =========================
+# Visualization Function
+# =========================
+
 def visualize_percentage(name, value, total):
     """
-    Function that give a visual representation of a percentage,
-    Prints the representation as "#"
+    Prints a visual representation of the percentage achieved towards a goal.
 
-    Args: 
-        name (string):
-        value (int):
-        total (int)
+    Args:
+        name (str): Name of the metric
+        value (int): Current value
+        total (int): Goal value
 
-    Returns: None
-        prints the visual of the percentage
+    Returns:
+        None
     """
     try:
         percentage = (value / total) * 100 if total else 0
         if percentage > 100:
-            print("Your goal has been achieved")
-            return
+            print("Your goal has been reached")
         item = f"{name}: {percentage:.2f}%"
         print(item.ljust(25), end=" ")
-        print("\n")
     except Exception as e:
         print(f"Visualization error: {e}")
 
 
+# =========================
+# Main Application Loop
+# =========================
+
 def main():
+    """
+    Main function to run the MicroSave application.
+    Handles user interaction and menu navigation.
+
+    Returns:
+        None
+    """
     password = getpass("Enter your MySQL root password: ")
 
     setup_db(password=password)
@@ -320,7 +451,7 @@ def main():
         print("6. Export Report")
         print("7. Exit")
 
-        choice = input("Choose an option [1-6]: ").strip()
+        choice = input("Choose an option [1-7]: ").strip()
 
         if choice == '1':
             add_income(password=password)
