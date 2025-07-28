@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """
 Welcome to MicroSave :)
 The app to help you reach your financial goals
@@ -106,9 +106,11 @@ def add_income(password=""):
         conn.commit()
         conn.close()
 
-        print(f"Income of {amount} RWF from {source} recorded.")
+        print(f"Income of RWF {amount:,.0f} from {source} recorded.")
+        input("\nPress Enter to return to the menu...")
     except ValueError:
         print("Invalid amount.")
+        input("\nPress Enter to return to the menu...")
 
 
 def add_expenses(password=""):
@@ -128,13 +130,16 @@ def add_expenses(password=""):
         cursor.close()
         conn.close()
 
-        print(f"Expense of {amount} RWF for {category} recorded.")
+        print(f"Expense of RWF {amount:,.0f} for {category} recorded.")
+        input("\nPress Enter to return to the menu...")
 
     except ValueError:
         print("Invalid amount.")
+        input("\nPress Enter to return to the menu...")
 
     except Exception as e:
         print(f"Error storing expense: {e}")
+        input("\nPress Enter to return to the menu...")
 
 
 def set_savings_goal(password=""):
@@ -157,13 +162,17 @@ def set_savings_goal(password=""):
         conn.commit()
         cursor.close()
         conn.close()
-        print("Saving goal added.\n")
+        print("Saving goal added.")
+        input("\nPress Enter to return to the menu...")
     except ValueError:
         print("Invalid input. Amount should be a number.")
+        input("\nPress Enter to return to the menu...")
     except mysql.connector.errors.DataError:
         print("Invalid input. The target date should be in a date format.")
+        input("\nPress Enter to return to the menu...")
     except Exception as e:
         print(f" Error: {e}")
+        input("\nPress Enter to return to the menu...")
 
 
 def view_summary(password=""):
@@ -187,13 +196,15 @@ def view_summary(password=""):
 
         balance = income - expenses
         print("\n Financial Summary")
-        print(f"Total Income: RWF {income}")
-        print(f"Total Expenses: RWF {expenses}")
-        print(f"Current Balance: RWF {balance}")
-        print(f"Savings Goal: RWF {goal}")
+        print(f"Total Income: RWF {income:,.0f}")
+        print(f"Total Expenses: RWF {expenses:,.0f}")
+        print(f"Current Balance: RWF {balance:,.0f}")
+        print(f"Savings Goal: RWF {goal:,.0f}")
         visualize_percentage("Goal Achieved", balance, goal)
+        input("\nPress Enter to return to the menu...")
     except Exception as e:
         print(f" Error generating summary: {e}")
+        input("\nPress Enter to return to the menu...")
 
 
 def view_long_summary(password=""):
@@ -209,7 +220,7 @@ def view_long_summary(password=""):
         expenses = cursor.fetchone()[0] or 0
 
         cursor.execute("SELECT * FROM Expenses")
-        expenses_list = cursor.fetchall() or 0
+        expenses_list = cursor.fetchall() or []
 
         cursor.execute("SELECT amount FROM Savings_goal WHERE id = 1")
         result = cursor.fetchone()
@@ -220,16 +231,18 @@ def view_long_summary(password=""):
 
         balance = income - expenses
         print("\n Financial Summary")
-        print(f"Total Income: RWF {income}")
+        print(f"Total Income: RWF {income:,.0f}")
         print("Expenses list:")
         for expense in expenses_list:
-            print(f"    {expense[1]}: RWF {expense[2]} on {expense[3]}")
-        print(f"Total Expenses: RWF {expenses}")
-        print(f"Current Balance: RWF {balance}")
-        print(f"Savings Goal: RWF {goal}")
+            print(f"    {expense[1]}: RWF {expense[2]:,.0f} on {expense[3]}")
+        print(f"Total Expenses: RWF {expenses:,.0f}")
+        print(f"Current Balance: RWF {balance:,.0f}")
+        print(f"Savings Goal: RWF {goal:,.0f}")
         visualize_percentage("Goal Achieved", balance, goal)
+        input("\nPress Enter to return to the menu...")
     except Exception as e:
         print(f" Error generating summary: {e}")
+        input("\nPress Enter to return to the menu...")
 
 
 # ===== EXPORT REPORT =====
@@ -258,10 +271,10 @@ def export_report(password=""):
 
         with open(filename, "a") as f:
             f.write("MicroSaver Financial Report\n")
-            f.write(f"Total Income: RWF {income}\n")
-            f.write(f"Total Expenses: RWF {expenses}\n")
-            f.write(f"Current Balance: RWF {balance}\n")
-            f.write(f"Savings Goal: RWF {goal}\n")
+            f.write(f"Total Income: RWF {income:,.0f}\n")
+            f.write(f"Total Expenses: RWF {expenses:,.0f}\n")
+            f.write(f"Current Balance: RWF {balance:,.0f}\n")
+            f.write(f"Savings Goal: RWF {goal:,.0f}\n")
 
             if goal > 0:
                 progress = (balance / goal) * 100
@@ -272,36 +285,42 @@ def export_report(password=""):
             f.write(f"Summary done on {date_today}\n")
             f.write("-----------------------------------------\n")
 
-        print(f"Report exported successfully to {filename}.\n")
+        print(f"Report exported successfully to {filename}.") 
         cursor.close()
         conn.close()
+        input("\nPress Enter to return to the menu...")
     except Exception as e:
         print(f" Export failed: {e}")
+        input("\nPress Enter to return to the menu...")
 
 
 def visualize_percentage(name, value, total):
     """
-    Function that give a visual representation of a percentage,
-    Prints the representation as "#"
-
-    Args: 
-        name (string):
-        value (int):
-        total (int)
-
-    Returns: None
-        prints the visual of the percentage
+    Visualizes progress toward a goal with clear messages.
+    Shows:
+    - Goal achievement %
+    - If above 100%, how much extra was saved
+    - If below 0%, how much in debt
+    - If under the goal, how much more is needed
     """
     try:
         percentage = (value / total) * 100 if total else 0
-        if percentage > 100:
-            print("Your goal has been achieved")
-            return
         item = f"{name}: {percentage:.2f}%"
-        print(item.ljust(25), end=" ")
-        print("\n")
+        print(item.ljust(25))
+
+        if percentage > 100:
+            extra = value - total
+            print(f" Goal Achieved! You've saved RWF {extra:,.0f} more than your goal.\n")
+        elif percentage < 0:
+            print(f" Below Zero! You're in debt by RWF {abs(value):,.0f}.")
+            print(f" You still need RWF {abs(value) + total:,.0f} to reach your goal.\n")
+        else:
+            remaining = total - value
+            print(f" You're RWF {remaining:,.0f} away from reaching your goal.")
+
     except Exception as e:
         print(f"Visualization error: {e}")
+
 
 
 def main():
