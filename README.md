@@ -48,3 +48,20 @@ python3 micro_save.py
 ```
 3. Follow the prompt instructions
 4. Have fun 🙃
+
+
+Linux Coding Lab Commit Log:
+the_real_toky@DESKTOP-2Q0J707:~/Coding-lab_Group4$ git log --pretty=format:"%an" | sort | uniq -c
+1 Cedric-Bigwi (Cedric)
+3 Julien-Dusabe (Julien)
+2 TheRealToky (Toky)
+6 nshderrick056 (Derrick)
+16 tokiniainaDisaine (Toky)
+
+Python Peer Learning Project Commit Log: 
+the_real_toky@DESKTOP-2Q0J707:~/python/peer_learning_project$ git log --pretty=format:"%an" | sort | uniq -c
+2 Ced (Cedric)
+1 Julien Dusabe (Julien)
+1 Julien-Dusabe (Julien)
+14 nshderrick056 (Derrick) 
+23 tokiniainaDisaine (Toky)
